@@ -211,7 +211,11 @@ export function App() {
               {isSavingAlias ? 'Saving…' : 'Save alias'}
             </button>
           </div>
-          {aliasError ? <p className="form-error">{aliasError}</p> : null}
+          {aliasError ? (
+            <p className="form-error" role="alert">
+              {aliasError}
+            </p>
+          ) : null}
         </form>
       ) : null}
 
