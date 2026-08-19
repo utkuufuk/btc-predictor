@@ -40,7 +40,11 @@ importers:
         specifier: ^22.19.0
         version: 22.20.1
 
-  packages/common: {}
+  packages/common:
+    dependencies:
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   packages/web:
     dependencies:

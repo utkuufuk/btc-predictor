@@ -1,4 +1,4 @@
-import type { BtcPrice } from '@btc-predictor/common';
+import { BtcPriceSchema, type BtcPrice } from '@btc-predictor/common';
 import { useEffect, useState } from 'react';
 
 const POLL_INTERVAL_MS = 1_000;
@@ -15,21 +15,6 @@ type PriceState = {
   hasError: boolean;
 };
 
-function isBtcPrice(value: unknown): value is BtcPrice {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'pair' in value &&
-    value.pair === 'BTC-USD' &&
-    'price' in value &&
-    typeof value.price === 'number' &&
-    Number.isFinite(value.price) &&
-    'observedAt' in value &&
-    typeof value.observedAt === 'string' &&
-    !Number.isNaN(Date.parse(value.observedAt))
-  );
-}
-
 async function requestBtcPrice(signal: AbortSignal): Promise<BtcPrice> {
   const response = await fetch('/api/btc-price', { signal });
 
@@ -37,13 +22,7 @@ async function requestBtcPrice(signal: AbortSignal): Promise<BtcPrice> {
     throw new Error(`Price request failed with status ${response.status}`);
   }
 
-  const value: unknown = await response.json();
-
-  if (!isBtcPrice(value)) {
-    throw new Error('Price response was invalid');
-  }
-
-  return value;
+  return BtcPriceSchema.parse(await response.json());
 }
 
 function formatTime(value: string): string {

@@ -2,6 +2,8 @@
 
 A one-minute BTC/USD prediction game.
 
+https://btc-predictor-qujwotbrbq-ew.a.run.app
+
 ## Structure
 
 - `packages/web`: React and Vite frontend

@@ -1,4 +1,4 @@
-import type { BtcPrice } from '@btc-predictor/common';
+import { BtcPriceSchema, type BtcPrice } from '@btc-predictor/common';
 import { z } from 'zod';
 
 const COINBASE_TICKER_URL = 'https://api.exchange.coinbase.com/products/BTC-USD/ticker';
@@ -10,11 +10,12 @@ const CoinbaseTickerSchema = z
     price: z.string().transform(Number).pipe(z.number().positive()),
     time: z.iso.datetime(),
   })
-  .transform(({ price, time }): BtcPrice => ({
-    pair: 'BTC-USD',
+  .transform(({ price, time }) => ({
+    pair: 'BTC-USD' as const,
     price,
     observedAt: new Date(time).toISOString(),
-  }));
+  }))
+  .pipe(BtcPriceSchema);
 
 type CachedPrice = {
   value: BtcPrice;
