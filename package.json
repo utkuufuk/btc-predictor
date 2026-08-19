@@ -1,0 +1,26 @@
+{
+  "name": "btc-predictor",
+  "version": "0.1.0",
+  "description": "One-minute BTC/USD price prediction game",
+  "private": true,
+  "packageManager": "pnpm@11.22.0",
+  "engines": {
+    "node": "^22.22.2",
+    "pnpm": "11.22.0"
+  },
+  "scripts": {
+    "build": "pnpm --recursive run build",
+    "dev": "pnpm --parallel --recursive run dev",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint --quiet .",
+    "lint-fix": "oxlint --fix .",
+    "typecheck": "pnpm --recursive run typecheck"
+  },
+  "devDependencies": {
+    "oxfmt": "0.62.0",
+    "oxlint": "1.77.0",
+    "tsx": "^4.22.4",
+    "typescript": "7.0.2"
+  }
+}

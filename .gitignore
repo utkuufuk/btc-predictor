@@ -1,0 +1,11 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+pnpm-debug.log
+/coverage
+**/node_modules
+**/dist
+/.cache
+/.idea
+/.vscode

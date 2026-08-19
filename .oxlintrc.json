@@ -1,0 +1,64 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error"
+  },
+  "plugins": ["oxc", "unicorn", "typescript", "node", "jest", "react", "jsx-a11y"],
+  "env": {
+    "builtin": true,
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "coverage/**", ".cache/**"],
+  "rules": {
+    "no-console": "error",
+    "no-undef": "error",
+    "no-unused-vars": [
+      "error",
+      {
+        "args": "all",
+        "argsIgnorePattern": "^_",
+        "ignoreRestSiblings": true,
+        "fix": {
+          "imports": "safe-fix",
+          "variables": "off"
+        }
+      }
+    ],
+    "react/rules-of-hooks": "error",
+    "no-array-constructor": "error",
+    "no-throw-literal": "error",
+    "node/no-process-env": "error",
+    "jest/no-focused-tests": "error",
+    "no-implicit-coercion": "error",
+    "object-shorthand": "error",
+    "jest/expect-expect": "off",
+    "typescript/no-dynamic-delete": "warn",
+    "react/jsx-no-useless-fragment": "warn",
+    "react/void-dom-elements-no-children": "warn",
+    "react/jsx-key": "warn",
+    "react/exhaustive-deps": "warn",
+    "typescript/no-non-null-assertion": "warn",
+    "typescript/no-explicit-any": "warn",
+    "typescript/no-invalid-void-type": "warn",
+    "no-control-regex": "warn",
+    "no-prototype-builtins": "warn",
+    "no-cond-assign": "warn",
+    "no-return-assign": "warn",
+    "react/no-array-index-key": "warn",
+    "react/button-has-type": "warn",
+    "react/no-unstable-nested-components": "warn",
+    "jsx-a11y/click-events-have-key-events": "warn",
+    "jsx-a11y/iframe-has-title": "warn",
+    "jsx-a11y/alt-text": "warn",
+    "jsx-a11y/tabindex-no-positive": "warn",
+    "jsx-a11y/interactive-supports-focus": "warn",
+    "jsx-a11y/role-has-required-aria-props": "warn",
+    "jsx-a11y/anchor-is-valid": "warn",
+    "jsx-a11y/label-has-associated-control": "warn",
+    "jsx-a11y/no-noninteractive-tabindex": "warn",
+    "jsx-a11y/no-static-element-interactions": "warn",
+    "jsx-a11y/role-supports-aria-props": "warn"
+  }
+}
