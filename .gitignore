@@ -3,6 +3,7 @@
 .env.*
 !.env.example
 pnpm-debug.log
+firebase-debug.log
 /coverage
 **/node_modules
 **/dist
