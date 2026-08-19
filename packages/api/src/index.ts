@@ -1,9 +1,10 @@
 import { createApp } from './app.js';
 
-// oxlint-disable-next-line node/no-process-env
-const PORT = Number.parseInt(process.env.PORT ?? '3000', 10);
 const app = createApp();
 
-app.listen(PORT, () => {
-  process.stdout.write(`API listening on port ${PORT}\n`);
+// oxlint-disable-next-line node/no-process-env
+const port = Number.parseInt(process.env.PORT ?? '3000', 10);
+
+app.listen(port, () => {
+  process.stdout.write(`API listening on port ${port}\n`);
 });
