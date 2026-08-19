@@ -15,24 +15,6 @@ type PriceState = {
   hasError: boolean;
 };
 
-async function requestBtcPrice(signal: AbortSignal): Promise<BtcPrice> {
-  const response = await fetch('/api/btc-price', { signal });
-
-  if (!response.ok) {
-    throw new Error(`Price request failed with status ${response.status}`);
-  }
-
-  return BtcPriceSchema.parse(await response.json());
-}
-
-function formatTime(value: string): string {
-  return new Intl.DateTimeFormat(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(new Date(value));
-}
-
 export function App() {
   const [priceState, setPriceState] = useState<PriceState>({
     isLoading: true,
@@ -133,4 +115,22 @@ export function App() {
       <p className="attribution">Market data provided by Coinbase.</p>
     </main>
   );
+}
+
+async function requestBtcPrice(signal: AbortSignal): Promise<BtcPrice> {
+  const response = await fetch('/api/btc-price', { signal });
+
+  if (!response.ok) {
+    throw new Error(`Price request failed with status ${response.status}`);
+  }
+
+  return BtcPriceSchema.parse(await response.json());
+}
+
+function formatTime(value: string): string {
+  return new Intl.DateTimeFormat(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).format(new Date(value));
 }
