@@ -10,11 +10,12 @@
   },
   "scripts": {
     "build": "pnpm --recursive run build",
-    "dev": "pnpm --parallel --recursive run dev",
+    "dev": "pnpm --filter @btc-predictor/common build && pnpm --parallel --recursive run dev",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
     "lint": "oxlint --quiet .",
     "lint-fix": "oxlint --fix .",
+    "test": "pnpm --recursive run test",
     "typecheck": "pnpm --recursive run typecheck"
   },
   "devDependencies": {

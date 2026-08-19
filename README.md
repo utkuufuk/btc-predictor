@@ -4,8 +4,9 @@ A one-minute BTC/USD prediction game.
 
 ## Structure
 
-- `src/web`: React and Vite frontend
-- `src/api`: Node.js and Express backend
+- `packages/web`: React and Vite frontend
+- `packages/api`: Node.js and Express backend
+- `packages/common`: types and utilities shared by the frontend and backend
 - `.github/workflows`: continuous integration and Cloud Run deployment
 
 ## Development
@@ -26,6 +27,7 @@ The frontend runs at <http://localhost:5173> and proxies `/api` requests to the 
 pnpm format:check
 pnpm lint
 pnpm typecheck
+pnpm test
 pnpm build
 ```
 
@@ -36,3 +38,9 @@ compiled React app, so the deployment has one service and one public URL.
 
 Pull requests and branch pushes run the checks in GitHub Actions. 
 Pushes to `main` build one container, publish it to Artifact Registry, and deploy it to Cloud Run.
+
+## Market data
+
+The app reads BTC/USD prices from Coinbase's public Exchange ticker through the backend. While the
+page is visible, the browser refreshes once per second; hidden or closed tabs make no requests. The
+backend caches each quote for one second so concurrent visitors share the same upstream response.
