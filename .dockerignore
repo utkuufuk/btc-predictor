@@ -2,4 +2,6 @@
 .github
 **/dist
 **/node_modules
+**/.env*
 pnpm-debug.log
+firebase-debug.log

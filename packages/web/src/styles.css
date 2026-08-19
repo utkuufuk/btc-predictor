@@ -38,6 +38,55 @@ main {
   box-shadow: 0 1.5rem 4rem rgb(23 32 51 / 8%);
 }
 
+.player-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e1e5ed;
+}
+
+.summary-label {
+  margin: 0 0 0.25rem;
+  color: #687386;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.score,
+.player-name {
+  margin: 0;
+  color: #172033;
+  font-size: 1.25rem;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+.score {
+  font-variant-numeric: tabular-nums;
+}
+
+.player-identity {
+  min-width: 0;
+  text-align: right;
+}
+
+.player-name {
+  overflow: hidden;
+  max-width: 20rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-name--error {
+  color: #b42318;
+  font-size: 0.875rem;
+}
+
 .eyebrow {
   margin: 0 0 0.5rem;
   color: #b45309;
@@ -53,6 +102,71 @@ h1 {
   font-size: clamp(2.5rem, 8vw, 4.5rem);
   letter-spacing: -0.06em;
   line-height: 0.95;
+}
+
+.alias-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border: 1px solid #f2d5a9;
+  border-radius: 1rem;
+  background: #fffaf2;
+}
+
+.alias-form label {
+  color: #172033;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.alias-form p {
+  margin: 0.2rem 0 0;
+  color: #687386;
+  font-size: 0.78rem;
+}
+
+.alias-controls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.alias-controls input {
+  min-width: 0;
+  flex: 1;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #c7ced9;
+  border-radius: 0.6rem;
+  color: #172033;
+  background: #ffffff;
+  font: inherit;
+}
+
+.alias-controls input:focus {
+  border-color: #b45309;
+  outline: 0.2rem solid rgb(180 83 9 / 12%);
+}
+
+.alias-controls button {
+  padding: 0.7rem 1rem;
+  border: 0;
+  border-radius: 0.6rem;
+  color: #ffffff;
+  background: #b45309;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.alias-controls button:disabled,
+.alias-controls input:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.alias-form .form-error {
+  color: #b42318;
 }
 
 .price-card {
@@ -138,5 +252,10 @@ h2 {
 
   .price-card {
     padding: 1.25rem;
+  }
+
+  .alias-controls {
+    align-items: stretch;
+    flex-direction: column;
   }
 }

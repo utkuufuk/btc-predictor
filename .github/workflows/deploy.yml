@@ -51,6 +51,11 @@ jobs:
           context: .
           push: true
           tags: ${{ env.IMAGE }}
+          build-args: |
+            VITE_FIREBASE_API_KEY=${{ vars.VITE_FIREBASE_API_KEY }}
+            VITE_FIREBASE_AUTH_DOMAIN=${{ vars.VITE_FIREBASE_AUTH_DOMAIN }}
+            VITE_FIREBASE_PROJECT_ID=${{ vars.GCP_PROJECT_ID }}
+            VITE_FIREBASE_APP_ID=${{ vars.VITE_FIREBASE_APP_ID }}
 
       - name: Deploy image to Cloud Run
         id: deploy
@@ -60,3 +65,4 @@ jobs:
           region: ${{ vars.GCP_REGION }}
           service: ${{ vars.GCP_CLOUD_RUN_SERVICE }}
           image: ${{ env.IMAGE }}
+          flags: '--service-account=${{ vars.GCP_RUNTIME_SERVICE_ACCOUNT }}'

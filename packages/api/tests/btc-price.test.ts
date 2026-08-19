@@ -31,6 +31,16 @@ test('live BTC price integration', async t => {
     assert.equal(response.headers.get('cache-control'), 'no-store');
     assert.deepEqual(btcPrice, await getLatestBtcPrice());
   });
+
+  await t.test('protects player data behind Firebase authentication', async t => {
+    const { server, baseUrl } = await startTestServer();
+    t.after(() => closeServer(server));
+
+    const response = await fetch(`${baseUrl}/api/player`);
+
+    assert.equal(response.status, 401);
+    assert.deepEqual(await response.json(), { error: 'Authentication required' });
+  });
 });
 
 async function startTestServer() {

@@ -4,15 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsx watch --env-file-if-exists=../../.env.local src/index.ts",
     "start": "node dist/index.js",
     "test": "tsx --test",
-    "typecheck": "tsc -p tsconfig.test.json"
+    "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@btc-predictor/common": "workspace:*",
     "express": "^5.2.1",
+    "firebase-admin": "^14.2.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
