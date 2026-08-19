@@ -110,9 +110,11 @@ export function App() {
             <p className="asset-name">Bitcoin</p>
             <h2 id="btc-price-heading">BTC / USD</h2>
           </div>
-          <span className="live-indicator">
-            <span className="live-dot" aria-hidden="true" /> Live
-          </span>
+          {value && !hasError ? (
+            <span className="live-indicator">
+              <span className="live-dot" aria-hidden="true" /> Live
+            </span>
+          ) : null}
         </div>
 
         <data className="price" value={value?.price}>
