@@ -1,0 +1,68 @@
+.price-chart {
+  margin: 1.5rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.price-chart-caption {
+  margin-bottom: 0.75rem;
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.price-chart-canvas {
+  position: relative;
+}
+
+.price-chart-plot {
+  display: block;
+  width: 100%;
+  color: var(--color-muted);
+}
+
+.price-chart-plot--up {
+  color: var(--color-positive);
+}
+
+.price-chart-plot--down {
+  color: var(--color-negative);
+}
+
+.price-chart-grid {
+  stroke: var(--color-border);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.price-chart-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.price-chart-point {
+  fill: currentColor;
+}
+
+.price-chart-y-axis {
+  position: absolute;
+  inset: 0 25% 0 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.price-chart-y-axis span {
+  padding: 0.1rem 0.25rem;
+  color: var(--color-muted);
+  background: rgb(250 251 252 / 88%);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}

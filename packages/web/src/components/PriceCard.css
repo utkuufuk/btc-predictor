@@ -1,0 +1,81 @@
+.price-card {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-surface);
+}
+
+.price-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.asset-name {
+  margin: 0 0 0.2rem;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+
+.asset-pair {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+}
+
+.live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-positive);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #29a36a;
+  box-shadow: 0 0 0 0.2rem rgb(41 163 106 / 14%);
+}
+
+.price {
+  display: block;
+  margin-top: 1.5rem;
+  color: var(--color-text);
+  font-size: clamp(2.25rem, 9vw, 4rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.price--up {
+  color: var(--color-positive);
+}
+
+.price--down {
+  color: var(--color-negative);
+}
+
+.price-direction {
+  margin-right: 0.25em;
+}
+
+.price-error {
+  margin: 0.75rem 0 0;
+  color: var(--color-negative);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 35rem) {
+  .price-card {
+    padding: 1.25rem;
+  }
+}
