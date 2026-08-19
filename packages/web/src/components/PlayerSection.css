@@ -1,0 +1,145 @@
+.player-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.summary-label {
+  margin: 0 0 0.25rem;
+  color: var(--color-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.score,
+.player-name {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.25rem;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+.score {
+  font-variant-numeric: tabular-nums;
+}
+
+.score--positive {
+  color: var(--color-positive);
+}
+
+.score--negative {
+  color: var(--color-negative);
+}
+
+.player-identity {
+  min-width: 0;
+  text-align: right;
+}
+
+.player-name {
+  overflow: hidden;
+  max-width: 20rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-name--error {
+  color: var(--color-negative);
+  font-size: 0.875rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.app-title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+}
+
+.alias-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border: 1px solid var(--color-primary-border);
+  border-radius: 1rem;
+  background: var(--color-primary-surface);
+}
+
+.alias-form label {
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.alias-form p {
+  margin: 0.2rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.78rem;
+}
+
+.alias-controls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.alias-controls input {
+  min-width: 0;
+  flex: 1;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #c7ced9;
+  border-radius: 0.6rem;
+  color: var(--color-text);
+  background: #ffffff;
+  font: inherit;
+}
+
+.alias-controls input:focus {
+  border-color: var(--color-primary);
+  outline: 0.2rem solid rgb(37 99 235 / 12%);
+}
+
+.alias-controls button {
+  padding: 0.7rem 1rem;
+  border: 0;
+  border-radius: 0.6rem;
+  color: #ffffff;
+  background: var(--color-primary);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.alias-controls button:disabled,
+.alias-controls input:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.alias-form .form-error {
+  color: var(--color-negative);
+}
+
+@media (max-width: 35rem) {
+  .alias-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
