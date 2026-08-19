@@ -53,6 +53,11 @@ The browser signs in anonymously with Firebase and immediately prompts a new pla
 The API verifies the player's ID token and stores the required alias and score in
 `players/{firebaseUid}` in Firestore.
 
+Firebase Anonymous Auth creates a unique user ID without asking for credentials and persists the
+session in the browser, so returning players keep their score; clearing site data or using another
+browser creates a new anonymous player. Because the app has no account recovery mechanism, the
+previous player document then remains orphaned in Firestore.
+
 ## Market data
 
 The app reads BTC/USD prices from Coinbase's public Exchange ticker through the backend. While the

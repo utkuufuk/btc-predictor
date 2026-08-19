@@ -227,15 +227,10 @@ h2 {
   line-height: 1;
 }
 
-.price-status {
-  min-height: 1.25rem;
+.price-error {
   margin: 0.75rem 0 0;
-  color: #687386;
-  font-size: 0.8rem;
-}
-
-.price-status--error {
   color: #b42318;
+  font-size: 0.8rem;
 }
 
 .attribution {

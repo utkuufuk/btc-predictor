@@ -26,14 +26,16 @@ export async function createPlayer(firebaseUid: string, alias: string): Promise<
     throw new AliasTakenError();
   }
 
-  const playerReference = firestore.collection(PLAYERS_COLLECTION).doc(firebaseUid);
   const player: Player = { alias, score: 0 };
 
-  await playerReference.create({
-    ...player,
-    createdAt: FieldValue.serverTimestamp(),
-    updatedAt: FieldValue.serverTimestamp(),
-  });
+  await firestore
+    .collection(PLAYERS_COLLECTION)
+    .doc(firebaseUid)
+    .create({
+      ...player,
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+    });
 
   return player;
 }
