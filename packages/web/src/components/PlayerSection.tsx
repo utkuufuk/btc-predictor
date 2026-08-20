@@ -1,75 +1,57 @@
-import { CreatePlayerRequestSchema, PlayerSchema, type Player } from '@btc-predictor/common';
-import { useEffect, useState, type SubmitEvent } from 'react';
+import {
+  CreatePlayerRequestSchema,
+  PlayerResponseSchema,
+  type PlayerResponse,
+} from '@btc-predictor/common';
+import { useState, type SubmitEvent } from 'react';
 
-import { authorizedFetch } from '../firebase';
+import { createPlayerProfile, type PlayerState } from '../http';
 import './PlayerSection.css';
-
-type PlayerState = {
-  value?: Player;
-  isLoading: boolean;
-  error?: string;
-};
 
 type AliasSubmitActions = {
   setAlias: (alias: string) => void;
   setAliasError: (error: string | undefined) => void;
   setIsSavingAlias: (isSaving: boolean) => void;
-  setPlayerState: (state: PlayerState) => void;
+  onPlayerChange: (response: PlayerResponse) => void;
 };
 
-export function PlayerSection() {
-  const [player, setPlayer] = useState<PlayerState>({ isLoading: true });
+export function PlayerSection({
+  playerState,
+  onPlayerChange,
+}: {
+  playerState: PlayerState;
+  onPlayerChange: (response: PlayerResponse) => void;
+}) {
   const [alias, setAlias] = useState('');
   const [aliasError, setAliasError] = useState<string>();
   const [isSavingAlias, setIsSavingAlias] = useState(false);
-
-  // Load the authenticated player's persisted state once, aborting if the component unmounts.
-  useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-
-    void requestPlayer(controller.signal)
-      .then(player => {
-        if (isMounted) {
-          setPlayer({ value: player, isLoading: false });
-        }
-      })
-      .catch(error => {
-        if (isMounted && !(error instanceof DOMException && error.name === 'AbortError')) {
-          setPlayer({ isLoading: false, error: 'Unable to load your player' });
-        }
-      });
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, []);
-
-  const score = player.value?.score ?? (!player.isLoading && !player.error ? 0 : '—');
-  const needsAlias = !player.value && !player.isLoading && !player.error;
-  const scoreClassName =
-    typeof score === 'number' && score !== 0
-      ? `score score--${score > 0 ? 'positive' : 'negative'}`
-      : 'score';
+  const score =
+    playerState.value?.score ?? (!playerState.isLoading && !playerState.error ? 0 : '—');
+  const needsAlias = !playerState.value && !playerState.isLoading && !playerState.error;
 
   return (
     <>
       <section className="player-summary" aria-label="Player">
         <div>
-          <p className="summary-label">Current score</p>
-          <p className={scoreClassName} aria-live="polite">
+          <p className="summary-label">Your score</p>
+          <p className="score" aria-live="polite">
             {score}
           </p>
         </div>
         <div className="player-identity">
           <p className="summary-label">Player</p>
-          <p className={player.error ? 'player-name player-name--error' : 'player-name'}>
-            {player.error
-              ? player.error
-              : player.value
-                ? player.value.alias
-                : player.isLoading
+          <p
+            className={
+              playerState.error && !playerState.value
+                ? 'player-name player-name--error'
+                : 'player-name'
+            }
+          >
+            {playerState.error && !playerState.value
+              ? playerState.error
+              : playerState.value
+                ? playerState.value.alias
+                : playerState.isLoading
                   ? 'Connecting…'
                   : 'Choose an alias'}
           </p>
@@ -77,7 +59,7 @@ export function PlayerSection() {
       </section>
 
       <p className="eyebrow">One-minute market predictions</p>
-      <h1 className="app-title">BTC Predictor</h1>
+      <h1 className="app-title">BTC Prediction App</h1>
 
       {needsAlias ? (
         <form
@@ -87,7 +69,7 @@ export function PlayerSection() {
               setAlias,
               setAliasError,
               setIsSavingAlias,
-              setPlayerState: setPlayer,
+              onPlayerChange,
             })
           }
         >
@@ -127,7 +109,7 @@ export function PlayerSection() {
 async function handleAliasSubmit(
   event: SubmitEvent<HTMLFormElement>,
   alias: string,
-  { setAlias, setAliasError, setIsSavingAlias, setPlayerState }: AliasSubmitActions,
+  { setAlias, setAliasError, setIsSavingAlias, onPlayerChange }: AliasSubmitActions,
 ): Promise<void> {
   event.preventDefault();
 
@@ -142,11 +124,7 @@ async function handleAliasSubmit(
   setIsSavingAlias(true);
 
   try {
-    const response = await authorizedFetch('/api/player', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(result.data),
-    });
+    const response = await createPlayerProfile(result.data);
 
     if (response.status === 409) {
       setAliasError('That alias is already taken. Choose another.');
@@ -157,26 +135,12 @@ async function handleAliasSubmit(
       throw new Error(`Alias request failed with status ${response.status}`);
     }
 
-    const player = PlayerSchema.parse(await response.json());
-    setPlayerState({ value: player, isLoading: false });
-    setAlias(player.alias);
+    const playerResponse = PlayerResponseSchema.parse(await response.json());
+    onPlayerChange(playerResponse);
+    setAlias(playerResponse.player.alias);
   } catch {
     setAliasError('Unable to save your alias. Try again.');
   } finally {
     setIsSavingAlias(false);
   }
-}
-
-async function requestPlayer(signal: AbortSignal): Promise<Player | undefined> {
-  const response = await authorizedFetch('/api/player', { signal });
-
-  if (response.status === 404) {
-    return undefined;
-  }
-
-  if (!response.ok) {
-    throw new Error(`Player request failed with status ${response.status}`);
-  }
-
-  return PlayerSchema.parse(await response.json());
 }

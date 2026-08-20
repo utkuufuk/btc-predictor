@@ -30,7 +30,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: var(--color-positive);
+  color: var(--color-primary);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -41,7 +41,7 @@
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
-  background: #29a36a;
+  background: var(--color-primary);
   box-shadow: 0 0 0 0.2rem rgb(41 163 106 / 14%);
 }
 

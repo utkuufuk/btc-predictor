@@ -1,6 +1,7 @@
-import { BtcPriceSchema, type BtcPrice } from '@btc-predictor/common';
+import { type ActiveGuess, type BtcPrice } from '@btc-predictor/common';
 import { useEffect, useState } from 'react';
 
+import { requestBtcPrice } from '../http';
 import {
   appendPriceSample,
   formatUsdPrice,
@@ -9,8 +10,8 @@ import {
   type PriceDirection,
   type PriceSample,
 } from '../price';
-import { PriceChart } from './PriceChart';
 import './PriceCard.css';
+import { PriceChart } from './PriceChart';
 
 const POLL_INTERVAL_MS = 1_000;
 
@@ -18,35 +19,38 @@ type PriceState = {
   value?: BtcPrice;
   direction?: PriceDirection;
   history: PriceSample[];
+  historyStartedAt?: number;
   hasError: boolean;
 };
 
-export function PriceCard() {
-  const [{ value, direction, history, hasError }, setPriceState] = useState<PriceState>({
-    history: [],
-    hasError: false,
-  });
+export function PriceCard({ activeGuess }: { activeGuess: ActiveGuess | null }) {
+  const [{ value, direction, history, historyStartedAt, hasError }, setPriceState] =
+    useState<PriceState>({
+      history: [],
+      hasError: false,
+    });
 
-  // Poll the BTC price while the page is visible and stop all work when this component unmounts.
+  // Poll while visible; hidden tabs keep only the local timer alive so polling resumes naturally.
   useEffect(() => {
     let isMounted = true;
     let pollTimer: number | undefined;
-    let requestController: AbortController | undefined;
 
     const scheduleNextPoll = () => {
       pollTimer = window.setTimeout(refreshPrice, POLL_INTERVAL_MS);
     };
 
     const refreshPrice = async () => {
-      if (!isMounted || document.visibilityState === 'hidden') {
+      if (!isMounted) {
         return;
       }
 
-      const controller = new AbortController();
-      requestController = controller;
+      if (document.visibilityState === 'hidden') {
+        scheduleNextPoll();
+        return;
+      }
 
       try {
-        const value = await requestBtcPrice(controller.signal);
+        const value = await requestBtcPrice();
 
         if (isMounted) {
           const sampledAt = Date.now();
@@ -62,12 +66,13 @@ export function PriceCard() {
                 ? (getPriceDirection(referencePrice, value.price) ?? current.direction)
                 : current.direction,
               history,
+              historyStartedAt: current.historyStartedAt ?? sampledAt,
               hasError: false,
             };
           });
         }
-      } catch (error) {
-        if (isMounted && !(error instanceof DOMException && error.name === 'AbortError')) {
+      } catch {
+        if (isMounted) {
           setPriceState(current => ({
             ...current,
             history: getRecentPriceSamples(current.history, Date.now()),
@@ -75,33 +80,17 @@ export function PriceCard() {
           }));
         }
       } finally {
-        if (requestController === controller) {
-          requestController = undefined;
-        }
-
-        if (!controller.signal.aborted && isMounted && document.visibilityState === 'visible') {
+        if (isMounted) {
           scheduleNextPoll();
         }
       }
     };
 
-    const handleVisibilityChange = () => {
-      window.clearTimeout(pollTimer);
-      requestController?.abort();
-
-      if (document.visibilityState === 'visible') {
-        void refreshPrice();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
     void refreshPrice();
 
     return () => {
       isMounted = false;
       window.clearTimeout(pollTimer);
-      requestController?.abort();
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
@@ -136,17 +125,12 @@ export function PriceCard() {
         </p>
       ) : null}
 
-      <PriceChart history={history} direction={direction} />
+      <PriceChart
+        history={history}
+        historyStartedAt={historyStartedAt}
+        direction={direction}
+        activeGuess={activeGuess}
+      />
     </section>
   );
-}
-
-async function requestBtcPrice(signal: AbortSignal): Promise<BtcPrice> {
-  const response = await fetch('/api/btc-price', { signal });
-
-  if (!response.ok) {
-    throw new Error(`Price request failed with status ${response.status}`);
-  }
-
-  return BtcPriceSchema.parse(await response.json());
 }

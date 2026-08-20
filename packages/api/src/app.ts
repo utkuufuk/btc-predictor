@@ -1,9 +1,20 @@
-import { CreatePlayerRequestSchema } from '@btc-predictor/common';
+import {
+  CreateGuessRequestSchema,
+  CreatePlayerRequestSchema,
+  type ResolvedGuess,
+} from '@btc-predictor/common';
 import express from 'express';
 import { fileURLToPath } from 'node:url';
 
 import { getFirebaseUid, requireFirebaseUser } from './authentication.js';
 import { getLatestBtcPrice } from './btc-price.js';
+import {
+  ActiveGuessExistsError,
+  PlayerNotFoundError,
+  createGuess,
+  isGuessEligible,
+  resolveGuess,
+} from './guesses.js';
 import { AliasTakenError, createPlayer, getPlayer } from './players.js';
 
 const WEB_ROOT = fileURLToPath(new URL('../../web/dist', import.meta.url));
@@ -31,18 +42,27 @@ export function createApp() {
     }
   });
 
-  // Returns the authenticated player's persisted profile, or 404 during onboarding.
+  // Returns the authenticated player's persisted profile.
   app.get('/api/player', requireFirebaseUser, async (request, response) => {
     try {
-      const player = await getPlayer(getFirebaseUid(request));
+      const firebaseUid = getFirebaseUid(request);
+      let player = await getPlayer(firebaseUid);
 
-      // Avoid stale profiles and a cached onboarding 404 after the player chooses an alias.
       if (player === null) {
         response.status(404).set('Cache-Control', 'no-store').json({ error: 'Player not found' });
         return;
       }
 
-      response.set('Cache-Control', 'no-store').json(player);
+      let resolvedGuess: ResolvedGuess | null = null;
+
+      if (player.activeGuess !== null && isGuessEligible(player.activeGuess)) {
+        const exitQuote = await getLatestBtcPrice();
+        const resolution = await resolveGuess(firebaseUid, exitQuote);
+        player = resolution.player;
+        resolvedGuess = resolution.resolvedGuess;
+      }
+
+      response.set('Cache-Control', 'no-store').json({ player, resolvedGuess });
     } catch {
       response.status(500).json({ error: 'Player data is temporarily unavailable' });
     }
@@ -59,7 +79,7 @@ export function createApp() {
 
     try {
       const player = await createPlayer(getFirebaseUid(request), result.data.alias);
-      response.status(201).json(player);
+      response.status(201).json({ player, resolvedGuess: null });
     } catch (error) {
       if (error instanceof AliasTakenError) {
         response.status(409).json({ error: 'Alias is already taken' });
@@ -67,6 +87,41 @@ export function createApp() {
       }
 
       response.status(500).json({ error: 'Player data is temporarily unavailable' });
+    }
+  });
+
+  // Starts a guess using an entry quote chosen by the backend.
+  app.post('/api/guess', requireFirebaseUser, async (request, response) => {
+    const result = CreateGuessRequestSchema.safeParse(request.body);
+    if (!result.success) {
+      response.status(400).json({ error: result.error.issues[0]?.message ?? 'Invalid guess' });
+      return;
+    }
+
+    let entryQuote;
+
+    try {
+      entryQuote = await getLatestBtcPrice();
+    } catch {
+      response.status(502).json({ error: 'BTC price is temporarily unavailable' });
+      return;
+    }
+
+    try {
+      const player = await createGuess(getFirebaseUid(request), result.data.direction, entryQuote);
+      response.status(201).json({ player, resolvedGuess: null });
+    } catch (error) {
+      if (error instanceof ActiveGuessExistsError) {
+        response.status(409).json({ error: 'A guess is already active' });
+        return;
+      }
+
+      if (error instanceof PlayerNotFoundError) {
+        response.status(404).json({ error: 'Player not found' });
+        return;
+      }
+
+      response.status(500).json({ error: 'Unable to create the guess' });
     }
   });
 

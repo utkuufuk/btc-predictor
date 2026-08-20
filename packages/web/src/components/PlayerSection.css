@@ -30,14 +30,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.score--positive {
-  color: var(--color-positive);
-}
-
-.score--negative {
-  color: var(--color-negative);
-}
-
 .player-identity {
   min-width: 0;
   text-align: right;

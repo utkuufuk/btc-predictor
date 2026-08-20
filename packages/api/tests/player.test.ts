@@ -10,5 +10,6 @@ test('player aliases are required and constrained', () => {
   assert.deepEqual(PlayerSchema.parse({ alias: 'Satoshi21', score: 0 }), {
     alias: 'Satoshi21',
     score: 0,
+    activeGuess: null,
   });
 });

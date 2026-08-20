@@ -24,8 +24,7 @@ export async function authorizedFetch(
   const user = await getAnonymousUser();
   const headers = new Headers(init.headers);
   headers.set('Authorization', `Bearer ${await user.getIdToken()}`);
-  const response = await fetch(input, { ...init, headers });
-  return response;
+  return fetch(input, { ...init, headers });
 }
 
 async function getAnonymousUser(): Promise<User> {
