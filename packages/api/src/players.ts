@@ -26,7 +26,11 @@ export async function createPlayer(firebaseUid: string, alias: string): Promise<
     throw new AliasTakenError();
   }
 
-  const player: Player = { alias, score: 0 };
+  const player: Player = {
+    alias,
+    score: 0,
+    activeGuess: null,
+  };
 
   await firestore
     .collection(PLAYERS_COLLECTION)

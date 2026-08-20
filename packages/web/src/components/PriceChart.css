@@ -48,9 +48,33 @@
   fill: currentColor;
 }
 
+.price-chart-guess {
+  color: var(--color-primary);
+}
+
+.price-chart-guess line {
+  stroke: currentColor;
+  stroke-dasharray: 4 4;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.price-chart-guess circle {
+  fill: #ffffff;
+  stroke: currentColor;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.price-chart-guess text {
+  fill: currentColor;
+  font-size: 10px;
+  font-weight: 750;
+}
+
 .price-chart-y-axis {
   position: absolute;
-  inset: 0 25% 0 0;
+  inset: 0;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
