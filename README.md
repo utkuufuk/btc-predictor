@@ -16,9 +16,9 @@ differs from the entry price: a correct guess adds one point and an incorrect gu
 after which the updated score is persisted and the player can guess again.
 
 Prices come from Coinbase through the backend and refresh every second while the page is visible.
-The rolling chart shows the most recent 60 seconds of price history; its line, the price text, and
-the direction arrow are green or red according to whether the latest price is above or below the
-earliest available price in that window.
+The rolling chart shows the most recent 60 seconds of price history. While a guess is active, its
+line, the price text, and the direction arrow are green or red according to whether the latest price
+is above or below the guess's entry price; otherwise, the price and chart remain neutral.
 
 ## Structure
 
@@ -29,7 +29,7 @@ earliest available price in that window.
 
 ## Development
 
-Use Node.js 22.22.2 and pnpm 11.22.0.
+Use Node.js v22 and pnpm v11.
 
 ```sh
 pnpm install

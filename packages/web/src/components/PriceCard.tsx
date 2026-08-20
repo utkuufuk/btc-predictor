@@ -7,7 +7,6 @@ import {
   formatUsdPrice,
   getPriceDirection,
   getRecentPriceSamples,
-  type PriceDirection,
   type PriceSample,
 } from '../price';
 import './PriceCard.css';
@@ -17,18 +16,18 @@ const POLL_INTERVAL_MS = 1_000;
 
 type PriceState = {
   value?: BtcPrice;
-  direction?: PriceDirection;
   history: PriceSample[];
   historyStartedAt?: number;
   hasError: boolean;
 };
 
 export function PriceCard({ activeGuess }: { activeGuess: ActiveGuess | null }) {
-  const [{ value, direction, history, historyStartedAt, hasError }, setPriceState] =
-    useState<PriceState>({
-      history: [],
-      hasError: false,
-    });
+  const [{ value, history, historyStartedAt, hasError }, setPriceState] = useState<PriceState>({
+    history: [],
+    hasError: false,
+  });
+  const direction =
+    activeGuess && value ? getPriceDirection(activeGuess.entryPrice, value.price) : null;
 
   // Poll while visible; hidden tabs keep only the local timer alive so polling resumes naturally.
   useEffect(() => {
@@ -57,14 +56,9 @@ export function PriceCard({ activeGuess }: { activeGuess: ActiveGuess | null }) 
 
           setPriceState(current => {
             const history = appendPriceSample(current.history, value.price, sampledAt);
-            const referencePrice = history[0]?.price ?? null;
-            const hasPriceChanged = value.price !== current.value?.price;
 
             return {
               value,
-              direction: hasPriceChanged
-                ? (getPriceDirection(referencePrice, value.price) ?? current.direction)
-                : current.direction,
               history,
               historyStartedAt: current.historyStartedAt ?? sampledAt,
               hasError: false,

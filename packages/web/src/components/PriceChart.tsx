@@ -21,7 +21,7 @@ export function PriceChart({
 }: {
   history: PriceSample[];
   historyStartedAt?: number;
-  direction?: PriceDirection;
+  direction: PriceDirection | null;
   activeGuess: ActiveGuess | null;
 }) {
   const now = Date.now();
