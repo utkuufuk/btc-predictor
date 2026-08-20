@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 
 import { requestBtcPrice } from '../http';
 import {
-  appendPriceSample,
   formatUsdPrice,
   getPriceDirection,
   getRecentPriceSamples,
@@ -55,12 +54,13 @@ export function PriceCard({ activeGuess }: { activeGuess: ActiveGuess | null }) 
           const sampledAt = Date.now();
 
           setPriceState(current => {
-            const history = appendPriceSample(current.history, value.price, sampledAt);
+            const recentHistory = getRecentPriceSamples(current.history, sampledAt);
 
             return {
               value,
-              history,
-              historyStartedAt: current.historyStartedAt ?? sampledAt,
+              history: [...recentHistory, { price: value.price, sampledAt }],
+              historyStartedAt:
+                recentHistory.length === 0 ? sampledAt : (current.historyStartedAt ?? sampledAt),
               hasError: false,
             };
           });
