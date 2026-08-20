@@ -80,7 +80,7 @@ export async function resolveGuess(
     transaction.update(playerRef, {
       score: updatedPlayer.score,
       activeGuess: null,
-      updatedAt: resolvedGuess.resolvedAt,
+      updatedAt: new Date(resolvedGuess.resolvedAt),
     });
 
     return { player: updatedPlayer, resolvedGuess };

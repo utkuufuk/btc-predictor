@@ -33,10 +33,12 @@ export function usePlayer() {
   }, []);
 
   const activeGuess = playerState.value?.activeGuess;
+  const activeGuessId = activeGuess?.id;
+  const activeGuessEligibleAt = activeGuess?.eligibleAt;
 
   // Poll an eligible guess while visible.
   useEffect(() => {
-    if (!activeGuess) {
+    if (!activeGuessId || !activeGuessEligibleAt) {
       return;
     }
 
@@ -81,13 +83,14 @@ export function usePlayer() {
       }
     };
 
-    scheduleNextPoll(Math.max(0, Date.parse(activeGuess.eligibleAt) - Date.now()));
+    const eligibilityDelay = Date.parse(activeGuessEligibleAt) - Date.now();
+    scheduleNextPoll(eligibilityDelay > 0 ? eligibilityDelay : ACTIVE_GUESS_POLL_INTERVAL_MS);
 
     return () => {
       isMounted = false;
       window.clearTimeout(pollTimer);
     };
-  }, [activeGuess]);
+  }, [activeGuessEligibleAt, activeGuessId]);
 
   return { playerState, setPlayerState };
 }
