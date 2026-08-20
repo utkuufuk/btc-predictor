@@ -27,6 +27,25 @@ is above or below the guess's entry price; otherwise, the price and chart remain
 - `packages/common`: types and utilities shared by the frontend and backend
 - `.github/workflows`: continuous integration and Cloud Run deployment
 
+```mermaid
+flowchart TD
+    Browser["React browser app"]
+    Auth["Firebase Anonymous Auth"]
+    API["Express API (Cloud Run)"]
+    Coinbase["Coinbase API"]
+    Firestore["Firestore"]
+    Common["Shared types & schemas"]
+
+    Browser -->|"Sign-in"| Auth
+    Browser -->|"HTTP + ID token"| API
+    API -->|"Verify ID token"| Auth
+    API -->|"Read/update player transactionally"| Firestore
+    API -->|"Fetch trusted quotes"| Coinbase
+    Common -.-> Browser
+    Common -.-> API
+    API -->|"Serves React app"| Browser
+```
+
 ## Development
 
 Use Node.js v22 and pnpm v11.
